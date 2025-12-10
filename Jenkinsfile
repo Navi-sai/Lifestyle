@@ -1,10 +1,6 @@
 pipeline{
     agent any
 
-    environment {
-       ENV_FILE = credentials('LIFESTYLE_ENV')
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -14,8 +10,10 @@ pipeline{
         }
         stage('Load environment properties') {
             steps {
-                echo 'Loading environmental variables...'
-                writeFile file: 'lifestyle-env.properties', text: ENV_FILE
+                    withCredentials([file(credentialsId: 'LIFESTYLE_ENV_FILE', variable: 'ENV_FILE')]) {
+                    bat 'copy %ENV_FILE% lifestyle-env.properties'
+                    bat 'type lifestyle-env.properties'
+                }
             }
         }   
 
